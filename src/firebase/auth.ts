@@ -1,10 +1,10 @@
-// import firebase from '@/firebase/firebase'
+import firebase from '@/firebase/firebase'
 
-// import { handleTranslateFbError } from '@/utils/functions/firebaseTranslateErrors'
+import { handleTranslateFbError } from '@/utils/functions/firebaseTranslateErrors'
 
-// import { message } from 'antd'
+import { message } from 'antd'
 
-// import { AdminTheme, ISigninUser, ISignupUser, IUserData } from '@/@types/Auth'
+import { AdminTheme, ISigninUser, ISignupUser, IUserData } from '@/@types/Auth'
 
 // // ============================================== CREATE ADMIN DATA
 
@@ -28,25 +28,25 @@
 
 // // ============================================== LOGIN
 
-// const handleSigninAdmin = async ({
-//   adminEmail,
-//   adminPassword
-// }: ISigninUser): Promise<boolean> => {
-//   try {
-//     await firebase.auth().signInWithEmailAndPassword(adminEmail, adminPassword)
+const handleSigninAdmin = async ({
+  adminEmail,
+  adminPassword
+}: ISigninUser): Promise<boolean> => {
+  try {
+    await firebase.auth().signInWithEmailAndPassword(adminEmail, adminPassword)
 
-//     return true
-//   } catch (error: any) {
-//     const errorCode = error.code
-//     const traslatedError = handleTranslateFbError(errorCode)
+    return true
+  } catch (error: any) {
+    const errorCode = error.code
+    const traslatedError = handleTranslateFbError(errorCode)
 
-//     message.open({
-//       type: 'error',
-//       content: traslatedError
-//     })
-//     return false
-//   }
-// }
+    message.open({
+      type: 'error',
+      content: traslatedError
+    })
+    return false
+  }
+}
 
 // const handleSignupAdmin = async ({
 //   adminName,
@@ -153,20 +153,20 @@
 
 // // ============================================== LOGOUT
 
-// const handleLogoutAdmin = async (): Promise<boolean> => {
-//   try {
-//     await firebase.auth().signOut()
+const handleLogoutAdmin = async (): Promise<boolean> => {
+  try {
+    await firebase.auth().signOut()
 
-//     return true
-//   } catch (error: any) {
-//     message.open({
-//       type: 'error',
-//       content: 'Falha ao fazer logout'
-//     })
+    return true
+  } catch (error: any) {
+    message.open({
+      type: 'error',
+      content: 'Falha ao fazer logout'
+    })
 
-//     return false
-//   }
-// }
+    return false
+  }
+}
 
 // // ============================================== HANDLE GET USER DATA
 
@@ -405,13 +405,13 @@
 
 // // -----------------------------------------------------------------
 
-// export {
-//   handleSigninAdmin,
-//   handleSignupAdmin,
-//   handleLogoutAdmin,
-//   handleGetAdminData,
-//   handleDeleteAdminAccount,
-//   handleChangeEmailAdmin,
-//   handleChangePasswordAdmin,
-//   handleChangeAdminTheme
-// }
+export {
+  handleSigninAdmin,
+  handleLogoutAdmin
+  // handleSignupAdmin,
+  // handleGetAdminData,
+  // handleDeleteAdminAccount,
+  // handleChangeEmailAdmin,
+  // handleChangePasswordAdmin,
+  // handleChangeAdminTheme
+}

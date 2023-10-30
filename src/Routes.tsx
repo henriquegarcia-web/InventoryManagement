@@ -2,9 +2,11 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 import { AdminPage, AdminSigninPage, NotFoundPage } from './pages'
 
-import { isAdminLogged } from '@/firebase/firebase'
+import { useAdminAuth } from './contexts/AdminAuthContext'
 
 const AppRoutes = () => {
+  const { isAdminLogged } = useAdminAuth()
+
   return (
     <BrowserRouter>
       <Routes>
@@ -18,7 +20,7 @@ const AppRoutes = () => {
         <Route
           path="/admin/entrar"
           element={
-            <PublicRoute isAuthenticated={!!isAdminLogged}>
+            <PublicRoute isAuthenticated={isAdminLogged}>
               <AdminSigninPage />
             </PublicRoute>
           }
@@ -26,7 +28,7 @@ const AppRoutes = () => {
         <Route
           path="/admin"
           element={
-            <PrivateAdminRoute isAuthenticated={!!isAdminLogged}>
+            <PrivateAdminRoute isAuthenticated={isAdminLogged}>
               <AdminPage />
             </PrivateAdminRoute>
           }

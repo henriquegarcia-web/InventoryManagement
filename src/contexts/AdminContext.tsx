@@ -1,11 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 
 export type ThemeProps = 'default' | 'dark'
 
+import { handleGetAllProducts } from '@/firebase/inventory'
+import { IProduct } from '@/@types/Admin'
+
 interface AdminContextData {
-  showPremiumAnnouncement: boolean
+  inventoryList: IProduct[] | null
 }
 
 // ===================================================================
@@ -17,15 +26,26 @@ export const AdminContext = createContext<AdminContextData>(
 const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   // =================================================================
 
-  const [showPremiumAnnouncement, setShowPremiumAnnouncement] = useState(false)
+  const [inventoryList, setInvetoryList] = useState<IProduct[] | null>(null)
+
+  useEffect(() => {
+    const unsubscribe = handleGetAllProducts((productsList) => {
+      setInvetoryList(productsList)
+    })
+    if (unsubscribe) {
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [])
 
   // =================================================================
 
   const AdminContextValues = useMemo(() => {
     return {
-      showPremiumAnnouncement
+      inventoryList
     }
-  }, [showPremiumAnnouncement])
+  }, [inventoryList])
 
   return (
     <AdminContext.Provider value={AdminContextValues}>

@@ -1,115 +1,59 @@
-// import {
-//   IoStorefrontOutline,
-//   IoRestaurantOutline,
-//   IoMegaphoneOutline,
-//   // IoPieChartOutline,
-//   IoPersonOutline,
-//   IoDiamondOutline,
-//   IoExitOutline
-// } from 'react-icons/io5'
-// import { BsQuestionCircle } from 'react-icons/bs'
+import { IoStorefrontOutline, IoExitOutline } from 'react-icons/io5'
 
-// import {
-//   CompanyInfosAdminView,
-//   MenuAdminView,
-//   // ReportsAdminView,
-//   AccountAdminView,
-//   DisclosureAdminView,
-//   PremiumAdminView,
-//   SupportAdminView
-// } from '@/pages/Admin/Views'
+import { AdminProductsView, AdminAccessView } from '@/pages/Admin/Views'
 
-// const menusData = [
-//   {
-//     menuId: 'estabelecimento',
-//     menuLabel: 'Estabelecimento',
-//     menuIcon: <IoStorefrontOutline />,
-//     menuRender: <CompanyInfosAdminView />,
-//     menuDisabled: false,
-//     menuHidden: false
-//   },
-//   {
-//     menuId: 'cardapio',
-//     menuLabel: 'Cardápio',
-//     menuIcon: <IoRestaurantOutline />,
-//     menuRender: <MenuAdminView />,
-//     menuDisabled: false,
-//     menuHidden: false
-//   },
-//   {
-//     menuId: 'divulgacao',
-//     menuLabel: 'Divulgação',
-//     menuIcon: <IoMegaphoneOutline />,
-//     menuRender: <DisclosureAdminView />,
-//     menuDisabled: false,
-//     menuHidden: false
-//   },
-//   // {
-//   //   menuId: 'menu_analytics',
-//   //   menuLabel: 'Relatórios',
-//   //   menuIcon: <IoPieChartOutline />,
-//   //   menuRender: <ReportsAdminView />,
-//   //   menuDisabled: false,
-//   //   menuHidden: false
-//   // },
-//   {
-//     menuId: 'minha-conta',
-//     menuLabel: 'Minha conta',
-//     menuIcon: <IoPersonOutline />,
-//     menuRender: <AccountAdminView />,
-//     menuDisabled: false,
-//     menuHidden: true
-//   },
-//   {
-//     menuId: 'suporte',
-//     menuLabel: 'Suporte',
-//     menuIcon: <BsQuestionCircle />,
-//     menuRender: <SupportAdminView />,
-//     menuDisabled: false,
-//     menuHidden: true
-//   },
-//   {
-//     menuId: 'obter-premium',
-//     menuLabel: 'Obter Premium',
-//     menuIcon: <IoDiamondOutline />,
-//     menuRender: <PremiumAdminView />,
-//     menuDisabled: false,
-//     menuHidden: true
-//   }
-// ]
+export interface IMenu {
+  menuId: string
+  menuLabel: string
+  menuIcon: any
+  menuRender?: React.ReactNode
+  menuDanger: boolean
+}
 
-// const privateMenusData = [
-//   {
-//     menuId: 'minha-conta',
-//     menuLabel: 'Minha conta',
-//     menuIcon: <IoPersonOutline />,
-//     menuDisabled: false,
-//     menuDanger: false
-//   },
-//   {
-//     menuId: 'sair',
-//     menuLabel: 'Sair',
-//     menuIcon: <IoExitOutline />,
-//     menuDisabled: false,
-//     menuDanger: true
-//   }
-// ]
+const menusData: IMenu[] = [
+  {
+    menuId: 'products',
+    menuLabel: 'Estoque',
+    menuIcon: <IoStorefrontOutline />,
+    menuRender: <AdminProductsView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'acessos',
+    menuLabel: 'Acessos',
+    menuIcon: <IoStorefrontOutline />,
+    menuRender: <AdminAccessView />,
+    menuDanger: false
+  }
+  // {
+  //   menuId: 'divulgacao',
+  //   menuLabel: 'Divulgação',
+  //   menuIcon: <IoStorefrontOutline />,
+  //   menuRender: <DisclosureAdminView />,
+  // },
+]
 
-// export interface IMenu {
-//   menuId: string
-//   menuLabel: string
-//   menuIcon: any
-//   menuRender: React.ReactNode
-//   menuDisabled: boolean
-//   menuHidden: boolean
-// }
+const privateMenusData: IMenu[] = [
+  {
+    menuId: 'products',
+    menuLabel: 'Estoque',
+    menuIcon: <IoStorefrontOutline />,
+    menuRender: <AdminProductsView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'acessos',
+    menuLabel: 'Acessos',
+    menuIcon: <IoStorefrontOutline />,
+    menuRender: <AdminAccessView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'sair',
+    menuLabel: 'Sair',
+    menuIcon: <IoExitOutline />,
+    menuDanger: true
+  }
+]
 
-// export interface IMenuPrivate {
-//   menuId: string
-//   menuLabel: string
-//   menuIcon: any
-//   menuDisabled: boolean
-//   menuDanger: boolean
-// }
-
-// export { menusData, privateMenusData }
+export { menusData, privateMenusData }
