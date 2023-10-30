@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Form } from 'antd'
+import { responsiveMobile, responsiveTablet } from '@/utils/styles/globals'
 
 export const ProductsView = styled.div`
   display: flex;
@@ -14,21 +15,84 @@ export const ProductsViewHeader = styled.div`
   justify-content: space-between;
   width: 100%;
   height: 40px;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    flex-direction: column;
+    justify-content: flex-start;
+    row-gap: 10px;
+
+    height: 90px;
+  }
+
+  @media screen and (max-width: ${responsiveMobile}) {
+    height: 150px;
+  }
 `
 
 export const ProductsViewHeaderFilters = styled.div`
   display: flex;
   column-gap: 10px;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    width: 100%;
+    justify-content: space-between;
+
+    .ant-space-compact {
+      width: fit-content !important;
+    }
+  }
+
+  @media screen and (max-width: ${responsiveMobile}) {
+    flex-direction: column;
+    row-gap: 10px;
+
+    .ant-input-group-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .ant-space-compact,
+    .ant-btn-compact-first-item {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+
+    .ant-btn-compact-last-item {
+      width: 40px !important;
+    }
+  }
 `
 
 export const ProductsViewHeaderMenu = styled.div`
   display: flex;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    width: 100%;
+    justify-content: flex-end;
+  }
 `
 
 export const ProductsViewContent = styled.div`
   display: flex;
   border-radius: 8px;
   height: calc(100% - 40px);
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+      z-index: 1000;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #ff7a00;
+    }
+  }
 `
 
 export const WithdrawForm = styled(Form)`
@@ -86,6 +150,10 @@ export const InputsWrapper = styled.div`
 export const ProductsList = styled.div`
   display: flex;
   width: 100%;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    width: fit-content;
+  }
 `
 
 // ============================================== CLIENTS LIST ITEM

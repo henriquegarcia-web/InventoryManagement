@@ -7,7 +7,9 @@ import {
   menusDataAdmin,
   menusDataPublic,
   IMenu,
-  privateMenusData
+  privateMenusData,
+  privateMenusMobileAdminData,
+  privateMenusMobilePublicData
 } from '@/data/menus'
 
 import { Avatar, Dropdown, type MenuProps, theme, Spin } from 'antd'
@@ -83,15 +85,17 @@ interface IUserMenu {
   menus: any
 }
 
-const UserMenu = ({ setMenuId, menus }: IUserMenu) => {
+const UserMenu = ({ setMenuId }: IUserMenu) => {
   const { token } = theme.useToken()
 
-  const navigate = useNavigate()
+  const { handleLogout, userData, isAdminSuper } = useAdminAuth()
 
-  const { handleLogout, userData } = useAdminAuth()
+  const privateMenu = isAdminSuper
+    ? privateMenusMobileAdminData
+    : privateMenusMobilePublicData
 
   const formattedPrivateMenus: MenuProps['items'] = useMemo(() => {
-    const transformedMenus = privateMenusData.map((menu: any) => {
+    const transformedMenus = privateMenu.map((menu: any) => {
       return {
         label: menu.menuLabel,
         key: menu.menuId,
@@ -100,40 +104,78 @@ const UserMenu = ({ setMenuId, menus }: IUserMenu) => {
     })
 
     return transformedMenus
-  }, [])
+  }, [privateMenu])
 
   return (
-    <Dropdown
-      menu={{
-        items: formattedPrivateMenus,
-        onClick: (e) => {
-          if (e.key === 'sair') {
-            handleLogout()
-            return
-          }
-          setMenuId(e.key)
-        }
-      }}
-    >
-      <S.UserMenu>
-        <S.UserMenuName style={{ color: token.colorText }}>
-          {!userData ? 'Carregando...' : userData?.adminName}
-        </S.UserMenuName>
-        <Avatar
-          size={28}
-          style={{
-            fontSize: 12,
-            backgroundColor: '#fde3cf',
-            color: '#f56a00'
+    <>
+      <S.UserMenuDesktop>
+        <Dropdown
+          menu={{
+            items: formattedPrivateMenus,
+            onClick: (e) => {
+              if (e.key === 'sair') {
+                handleLogout()
+                return
+              }
+              setMenuId(e.key)
+            }
           }}
         >
-          {!userData ? (
-            <Spin size="small" style={{ marginTop: '-4px' }} />
-          ) : (
-            formatUsername(userData?.adminName)
-          )}
-        </Avatar>
-      </S.UserMenu>
-    </Dropdown>
+          <S.UserMenu>
+            <S.UserMenuName style={{ color: token.colorText }}>
+              {!userData ? 'Carregando...' : userData?.adminName}
+            </S.UserMenuName>
+            <Avatar
+              size={28}
+              style={{
+                fontSize: 12,
+                backgroundColor: '#fde3cf',
+                color: '#f56a00'
+              }}
+            >
+              {!userData ? (
+                <Spin size="small" style={{ marginTop: '-4px' }} />
+              ) : (
+                formatUsername(userData?.adminName)
+              )}
+            </Avatar>
+          </S.UserMenu>
+        </Dropdown>
+      </S.UserMenuDesktop>
+      <S.UserMenuMobile>
+        <Dropdown
+          menu={{
+            items: formattedPrivateMenus,
+            onClick: (e) => {
+              if (e.key === 'sair') {
+                handleLogout()
+                return
+              }
+              setMenuId(e.key)
+            }
+          }}
+        >
+          <S.UserMenu>
+            <S.UserMenuName style={{ color: token.colorText }}>
+              {!userData ? 'Carregando...' : userData?.adminName}
+            </S.UserMenuName>
+            <Avatar
+              size={28}
+              style={{
+                fontSize: 12,
+                backgroundColor: '#fde3cf',
+                color: '#f56a00'
+              }}
+            >
+              {!userData ? (
+                <Spin size="small" style={{ marginTop: '-4px' }} />
+              ) : (
+                formatUsername(userData?.adminName)
+              )}
+            </Avatar>
+          </S.UserMenu>
+        </Dropdown>
+      </S.UserMenuMobile>
+    </>
   )
 }

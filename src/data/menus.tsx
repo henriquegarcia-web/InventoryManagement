@@ -1,4 +1,9 @@
-import { IoStorefrontOutline, IoExitOutline } from 'react-icons/io5'
+import {
+  IoPeopleOutline,
+  IoExitOutline,
+  IoCubeOutline,
+  IoKeyOutline
+} from 'react-icons/io5'
 
 import {
   AdminProductsView,
@@ -18,7 +23,7 @@ const menusDataPublic: IMenu[] = [
   {
     menuId: 'products',
     menuLabel: 'Estoque',
-    menuIcon: <IoStorefrontOutline />,
+    menuIcon: <IoCubeOutline />,
     menuRender: <AdminProductsView />,
     menuDanger: false
   }
@@ -28,21 +33,21 @@ const menusDataAdmin: IMenu[] = [
   {
     menuId: 'products',
     menuLabel: 'Estoque',
-    menuIcon: <IoStorefrontOutline />,
+    menuIcon: <IoCubeOutline />,
     menuRender: <AdminProductsView />,
     menuDanger: false
   },
   {
     menuId: 'acessos',
     menuLabel: 'Acessos',
-    menuIcon: <IoStorefrontOutline />,
+    menuIcon: <IoKeyOutline />,
     menuRender: <AdminAccessView />,
     menuDanger: false
   },
   {
     menuId: 'usuarios',
     menuLabel: 'Usuários',
-    menuIcon: <IoStorefrontOutline />,
+    menuIcon: <IoPeopleOutline />,
     menuRender: <AdminClientsView />,
     menuDanger: false
   }
@@ -52,14 +57,14 @@ const privateMenusData: IMenu[] = [
   // {
   //   menuId: 'products',
   //   menuLabel: 'Estoque',
-  //   menuIcon: <IoStorefrontOutline />,
+  //   menuIcon: <IoKeyOutline />,
   //   menuRender: <AdminProductsView />,
   //   menuDanger: false
   // },
   // {
   //   menuId: 'acessos',
   //   menuLabel: 'Acessos',
-  //   menuIcon: <IoStorefrontOutline />,
+  //   menuIcon: <IoKeyOutline />,
   //   menuRender: <AdminAccessView />,
   //   menuDanger: false
   // },
@@ -71,4 +76,56 @@ const privateMenusData: IMenu[] = [
   }
 ]
 
-export { menusDataPublic, menusDataAdmin, privateMenusData }
+const privateMenusMobilePublicData: IMenu[] = [
+  {
+    menuId: 'products',
+    menuLabel: 'Estoque',
+    menuIcon: <IoCubeOutline />,
+    menuRender: <AdminProductsView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'sair',
+    menuLabel: 'Sair',
+    menuIcon: <IoExitOutline />,
+    menuDanger: true
+  }
+]
+
+const privateMenusMobileAdminData: IMenu[] = [
+  {
+    menuId: 'products',
+    menuLabel: 'Estoque',
+    menuIcon: <IoCubeOutline />,
+    menuRender: <AdminProductsView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'acessos',
+    menuLabel: 'Acessos',
+    menuIcon: <IoKeyOutline />,
+    menuRender: <AdminAccessView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'usuarios',
+    menuLabel: 'Usuários',
+    menuIcon: <IoPeopleOutline />,
+    menuRender: <AdminClientsView />,
+    menuDanger: false
+  },
+  {
+    menuId: 'sair',
+    menuLabel: 'Sair',
+    menuIcon: <IoExitOutline />,
+    menuDanger: true
+  }
+]
+
+export {
+  menusDataPublic,
+  menusDataAdmin,
+  privateMenusData,
+  privateMenusMobilePublicData,
+  privateMenusMobileAdminData
+}

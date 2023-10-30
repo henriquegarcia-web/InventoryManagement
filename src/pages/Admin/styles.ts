@@ -1,5 +1,9 @@
 import styled from 'styled-components'
-import { Window, responsiveMobile } from '@/utils/styles/globals'
+import {
+  Window,
+  responsiveMobile,
+  responsiveTablet
+} from '@/utils/styles/globals'
 
 const adminHeaderHeight = '50px'
 
@@ -38,11 +42,22 @@ export const AdminHeaderLogo = styled.div`
 
     color: rgba(0, 0, 0, 0.8);
   }
+
+  @media screen and (max-width: ${responsiveMobile}) {
+    h1 {
+      font-size: 15px;
+      line-height: 15px;
+    }
+  }
 `
 
 export const AdminHeaderNavigation = styled.div`
   display: flex;
   height: 100%;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    display: none;
+  }
 `
 
 export const NavigationLink = styled.div<INavigationLink>`
@@ -73,15 +88,23 @@ export const AdminViews = styled.div`
   padding: 20px;
 `
 
-// export const Admin = styled.div`
-//   display: flex;
-// `
-
-// export const Admin = styled.div`
-//   display: flex;
-// `
-
 // ============================================== USER MENU
+
+export const UserMenuDesktop = styled.div`
+  display: flex;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    display: none;
+  }
+`
+
+export const UserMenuMobile = styled.div`
+  display: none;
+
+  @media screen and (max-width: ${responsiveTablet}) {
+    display: flex;
+  }
+`
 
 export const UserMenu = styled.div`
   display: flex;
@@ -92,10 +115,6 @@ export const UserMenu = styled.div`
     p {
       opacity: 1;
     }
-  }
-
-  @media screen and (max-width: ${responsiveMobile}) {
-    display: none;
   }
 `
 
