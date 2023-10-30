@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 
 import * as S from './styles'
 
-import { menusData, IMenu, privateMenusData } from '@/data/menus'
+import { menusDataAdmin, menusDataPublic, IMenu } from '@/data/menus'
 
 import { Avatar, Dropdown, type MenuProps, theme, Spin } from 'antd'
 
@@ -11,22 +11,24 @@ import { formatUsername } from '@/utils/functions/formatUsername'
 import { useAdminAuth } from '@/contexts/AdminAuthContext'
 
 const Admin = () => {
-  const [menuId, setMenuId] = useState(menusData[0].menuId)
+  const { isAdminSuper } = useAdminAuth()
+
+  const menus = isAdminSuper ? menusDataAdmin : menusDataPublic
+
+  const [menuId, setMenuId] = useState(menus[0].menuId)
   const [isMenuMobileOpen, setIsMenuMobileOpen] = useState(false)
 
   // const menuMobileRef = useRef(null)
 
   const viewToRender = useMemo(() => {
-    const activeMenuItem = menusData.find(
-      (menuItem) => menuItem.menuId === menuId
-    )
+    const activeMenuItem = menus.find((menuItem) => menuItem.menuId === menuId)
 
     return activeMenuItem ? (
       activeMenuItem.menuRender
     ) : (
       <>View naão encontrada</>
     )
-  }, [menuId])
+  }, [menuId, menus])
 
   const toggleMenuMobile = () => setIsMenuMobileOpen(!isMenuMobileOpen)
   const closeMenuMobile = () => setIsMenuMobileOpen(false)
@@ -44,7 +46,7 @@ const Admin = () => {
           <h1>Sistema de Estoque</h1>
         </S.AdminHeaderLogo>
         <S.AdminHeaderNavigation>
-          {menusData.map((menu: IMenu) => {
+          {menus.map((menu: IMenu) => {
             const isMenuActive = menu.menuId === menuId
 
             return (
@@ -59,7 +61,7 @@ const Admin = () => {
           })}
         </S.AdminHeaderNavigation>
         <S.AdminHeaderUserInfos>
-          <UserMenu setMenuId={setMenuId} />
+          <UserMenu setMenuId={setMenuId} menus={menus} />
         </S.AdminHeaderUserInfos>
       </S.AdminHeader>
       <S.AdminViews>{viewToRender}</S.AdminViews>
@@ -73,9 +75,10 @@ export default Admin
 
 interface IUserMenu {
   setMenuId: any
+  menus: any
 }
 
-const UserMenu = ({ setMenuId }: IUserMenu) => {
+const UserMenu = ({ setMenuId, menus }: IUserMenu) => {
   const { token } = theme.useToken()
 
   const navigate = useNavigate()
@@ -83,7 +86,7 @@ const UserMenu = ({ setMenuId }: IUserMenu) => {
   const { handleLogout, userData } = useAdminAuth()
 
   const formattedPrivateMenus: MenuProps['items'] = useMemo(() => {
-    const transformedMenus = privateMenusData.map((menu: any) => {
+    const transformedMenus = menus.map((menu: any) => {
       return {
         label: menu.menuLabel,
         key: menu.menuId,
@@ -92,7 +95,7 @@ const UserMenu = ({ setMenuId }: IUserMenu) => {
     })
 
     return transformedMenus
-  }, [])
+  }, [menus])
 
   return (
     <Dropdown

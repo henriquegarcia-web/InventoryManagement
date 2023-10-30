@@ -1,14 +1,21 @@
 import { useMemo, useState } from 'react'
 
 import * as S from './styles'
-import { IoSearchSharp } from 'react-icons/io5'
+import {
+  IoCheckmarkCircleOutline,
+  IoCloseCircleOutline,
+  IoSearchSharp
+} from 'react-icons/io5'
 
 import { Controller, useForm } from 'react-hook-form'
 
 import { Button, Checkbox, Form, Input, Modal } from 'antd'
 import { Table } from 'evergreen-ui'
 
-import { handleCreateAuthenticatedUser } from '@/firebase/admin'
+import {
+  handleBlockAuthenticatedUser,
+  handleCreateAuthenticatedUser
+} from '@/firebase/admin'
 import { useAdmin } from '@/contexts/AdminContext'
 
 const AccessView = () => {
@@ -199,6 +206,20 @@ interface IAccessListItem {
 }
 
 const AccessListItem = ({ admin }: IAccessListItem) => {
+  const handleBlockUserAccess = async () => {
+    const blockUserResponse = await handleBlockAuthenticatedUser({
+      adminEmail: admin.adminEmail,
+      adminBlocked: true
+    })
+  }
+
+  const handleEnableUserAccess = async () => {
+    const blockUserResponse = await handleBlockAuthenticatedUser({
+      adminEmail: admin.adminEmail,
+      adminBlocked: false
+    })
+  }
+
   return (
     <Table.Row height={50}>
       <Table.TextCell>{admin.adminName}</Table.TextCell>
@@ -207,12 +228,26 @@ const AccessListItem = ({ admin }: IAccessListItem) => {
       <Table.TextCell>{admin.adminBlocked ? 'Sim' : 'Não'}</Table.TextCell>
 
       <S.AccessListMenu>
-        {/* <IconButton
-          icon={HiOutlineEye}
-          iconSize={16}
-          size="medium"
-          onClick={() => openViewModal(request)}
-        /> */}
+        {admin.adminBlocked ? (
+          <Button
+            onClick={handleEnableUserAccess}
+            icon={
+              <IoCheckmarkCircleOutline
+                style={{ fontSize: 20, marginLeft: '5px' }}
+              />
+            }
+          />
+        ) : (
+          <Button
+            onClick={handleBlockUserAccess}
+            icon={
+              <IoCloseCircleOutline
+                style={{ fontSize: 20, marginLeft: '5px' }}
+              />
+            }
+            danger
+          />
+        )}
       </S.AccessListMenu>
     </Table.Row>
   )

@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react'
 
 import * as S from './styles'
-import { IoSearchSharp } from 'react-icons/io5'
+import {
+  IoCheckmarkCircleOutline,
+  IoCloseCircleOutline,
+  IoSearchSharp
+} from 'react-icons/io5'
 
 import { Button, Dropdown, Input, Modal, Popconfirm, theme } from 'antd'
 import { Table } from 'evergreen-ui'
@@ -9,6 +13,7 @@ import { Table } from 'evergreen-ui'
 import { Controller, useForm } from 'react-hook-form'
 
 import { useAdmin } from '@/contexts/AdminContext'
+import { handleBlockAuthenticatedUser, handleBlockUser } from '@/firebase/admin'
 
 const ClientsView = () => {
   const { token } = theme.useToken()
@@ -93,6 +98,22 @@ interface IClientsListItem {
 }
 
 const ClientsListItem = ({ admin }: IClientsListItem) => {
+  const handleBlockAffiliate = async () => {
+    const blockUserResponse = await handleBlockUser({
+      adminId: admin.adminId,
+      adminEmail: admin.adminEmail,
+      adminBlocked: true
+    })
+  }
+
+  const handleEnableAffiliate = async () => {
+    const blockUserResponse = await handleBlockUser({
+      adminId: admin.adminId,
+      adminEmail: admin.adminEmail,
+      adminBlocked: false
+    })
+  }
+
   return (
     <Table.Row height={50}>
       <Table.TextCell>{admin.adminName}</Table.TextCell>
@@ -101,12 +122,26 @@ const ClientsListItem = ({ admin }: IClientsListItem) => {
       <Table.TextCell>{admin.adminBlocked ? 'Sim' : 'Não'}</Table.TextCell>
 
       <S.ClientsListMenu>
-        {/* <IconButton
-          icon={HiOutlineEye}
-          iconSize={16}
-          size="medium"
-          onClick={() => openViewModal(request)}
-        /> */}
+        {admin.adminBlocked ? (
+          <Button
+            onClick={handleEnableAffiliate}
+            icon={
+              <IoCheckmarkCircleOutline
+                style={{ fontSize: 20, marginLeft: '5px' }}
+              />
+            }
+          />
+        ) : (
+          <Button
+            onClick={handleBlockAffiliate}
+            icon={
+              <IoCloseCircleOutline
+                style={{ fontSize: 20, marginLeft: '5px' }}
+              />
+            }
+            danger
+          />
+        )}
       </S.ClientsListMenu>
     </Table.Row>
   )

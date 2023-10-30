@@ -47,4 +47,10 @@ export const ClientsListMenu = styled.div`
   width: 80px;
   column-gap: 5px;
   padding-right: 8px;
+
+  button {
+    svg {
+      margin: 1px 0 0 0 !important;
+    }
+  }
 `

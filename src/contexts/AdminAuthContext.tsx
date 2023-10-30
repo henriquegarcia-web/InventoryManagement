@@ -24,6 +24,7 @@ interface AdminAuthContextData {
   userId: string | null
   userData: IUserData | null
   isAdminLogged: boolean
+  isAdminSuper: boolean
 
   handleLogout: () => void
 }
@@ -43,6 +44,10 @@ const AdminAuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdminLogged = useMemo(() => {
     return !!userId
   }, [userId])
+
+  const isAdminSuper = useMemo(() => {
+    return !!userData && userData.adminIsSuper
+  }, [userData])
 
   // -----------------------------------------------------------------
 
@@ -92,9 +97,10 @@ const AdminAuthProvider = ({ children }: { children: React.ReactNode }) => {
       userId,
       userData,
       isAdminLogged,
+      isAdminSuper,
       handleLogout
     }
-  }, [userId, userData, isAdminLogged, handleLogout])
+  }, [userId, userData, isAdminLogged, isAdminSuper, handleLogout])
 
   return (
     <AdminAuthContext.Provider value={AdminAuthContextValues}>

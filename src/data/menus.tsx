@@ -14,7 +14,17 @@ export interface IMenu {
   menuDanger: boolean
 }
 
-const menusData: IMenu[] = [
+const menusDataPublic: IMenu[] = [
+  {
+    menuId: 'products',
+    menuLabel: 'Estoque',
+    menuIcon: <IoStorefrontOutline />,
+    menuRender: <AdminProductsView />,
+    menuDanger: false
+  }
+]
+
+const menusDataAdmin: IMenu[] = [
   {
     menuId: 'products',
     menuLabel: 'Estoque',
@@ -61,4 +71,4 @@ const privateMenusData: IMenu[] = [
   }
 ]
 
-export { menusData, privateMenusData }
+export { menusDataPublic, menusDataAdmin, privateMenusData }
