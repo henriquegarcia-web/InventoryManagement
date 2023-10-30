@@ -30,3 +30,21 @@ export const ClientsViewContent = styled.div`
 
   border: 1px solid rgba(0, 0, 0, 0.1);
 `
+
+// ============================================== CLIENTS LIST
+
+export const ClientsList = styled.div`
+  display: flex;
+  width: 100%;
+`
+
+// ============================================== CLIENTS LIST ITEM
+
+export const ClientsListMenu = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 80px;
+  column-gap: 5px;
+  padding-right: 8px;
+`

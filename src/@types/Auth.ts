@@ -20,6 +20,7 @@ export interface IUserData {
   adminEmail: string
   adminRegisteredAt: number
   adminBlocked: boolean
+  adminIsSuper: boolean
 }
 
 export interface IAuthenticatedUser {
@@ -27,6 +28,7 @@ export interface IAuthenticatedUser {
   adminEmail: string
   adminRegisteredAt?: number
   adminBlocked: boolean
+  adminIsSuper: boolean
 }
 
 // export interface ISigninAdmin extends ISigninUser {}

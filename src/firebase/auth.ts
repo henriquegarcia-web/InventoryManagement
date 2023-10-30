@@ -128,7 +128,8 @@ const handleSignupUser = async ({
     const adminAuthenticatedData = adminAuthenticationQuerySnapshot.val()
     const adminId = Object.keys(adminAuthenticatedData)[0]
 
-    const { adminName, adminBlocked } = adminAuthenticatedData[adminId]
+    const { adminName, adminIsSuper, adminBlocked } =
+      adminAuthenticatedData[adminId]
 
     if (adminBlocked) {
       message.open({
@@ -155,7 +156,8 @@ const handleSignupUser = async ({
         adminName: adminName,
         adminEmail: adminEmail,
         adminRegisteredAt: Date.now(),
-        adminBlocked: false
+        adminBlocked: false,
+        adminIsSuper: adminIsSuper
       }
 
       const adminDataResponse = await createUserAccount(adminData)
@@ -258,5 +260,9 @@ const handleGetAdminData = (
   return offCallback
 }
 
-
-export { handleSigninUser, handleSignupUser, handleLogoutAdmin, handleGetAdminData }
+export {
+  handleSigninUser,
+  handleSignupUser,
+  handleLogoutAdmin,
+  handleGetAdminData
+}

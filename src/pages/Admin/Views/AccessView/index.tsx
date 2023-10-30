@@ -5,7 +5,7 @@ import { IoSearchSharp } from 'react-icons/io5'
 
 import { Controller, useForm } from 'react-hook-form'
 
-import { Button, Form, Input, Modal } from 'antd'
+import { Button, Checkbox, Form, Input, Modal } from 'antd'
 import { Table } from 'evergreen-ui'
 
 import { handleCreateAuthenticatedUser } from '@/firebase/admin'
@@ -74,6 +74,7 @@ export default AccessView
 interface ICreateUserForm {
   adminName: string
   adminEmail: string
+  adminIsSuper?: boolean
 }
 
 interface ICreateUserAccessModal {
@@ -96,7 +97,8 @@ const CreateUserAccessModal = ({
 
     const signupAdminResponse = await handleCreateAuthenticatedUser({
       adminName: data.adminName,
-      adminEmail: data.adminEmail
+      adminEmail: data.adminEmail,
+      adminIsSuper: data.adminIsSuper ? data.adminIsSuper : false
     })
 
     setCreateUserLoading(false)
@@ -140,6 +142,13 @@ const CreateUserAccessModal = ({
             )}
           />
         </Form.Item>
+        <Form.Item label="Usuário é Super Admin?">
+          <Controller
+            name="adminIsSuper"
+            control={control}
+            render={({ field }) => <Checkbox {...field}></Checkbox>}
+          />
+        </Form.Item>
 
         <S.CreateClientFormFooter>
           <Button
@@ -156,7 +165,7 @@ const CreateUserAccessModal = ({
   )
 }
 
-// ============================================================= PROJECTS LIST
+// ============================================================= ACCESS LIST
 
 interface IAccessList {
   accessListData: any[]
@@ -169,6 +178,8 @@ const AccessList = ({ accessListData }: IAccessList) => {
         <Table.Head height={40} paddingRight={0}>
           <Table.TextHeaderCell>Nome</Table.TextHeaderCell>
           <Table.TextHeaderCell>E-mail</Table.TextHeaderCell>
+          <Table.TextHeaderCell>Super Admin?</Table.TextHeaderCell>
+          <Table.TextHeaderCell>Bloqueado?</Table.TextHeaderCell>
           <S.AccessListMenu />
         </Table.Head>
         <Table.Body height={`calc(100% - 40px)`}>
@@ -181,19 +192,19 @@ const AccessList = ({ accessListData }: IAccessList) => {
   )
 }
 
-// ============================================================= PROJECTS LIST ITEM
+// ============================================================= ACCESS LIST ITEM
 
 interface IAccessListItem {
   admin: any
 }
 
 const AccessListItem = ({ admin }: IAccessListItem) => {
-  const [isOnEditMode, setIsOnEditMode] = useState(false)
-
   return (
     <Table.Row height={50}>
       <Table.TextCell>{admin.adminName}</Table.TextCell>
       <Table.TextCell>{admin.adminEmail}</Table.TextCell>
+      <Table.TextCell>{admin.adminIsSuper ? 'Sim' : 'Não'}</Table.TextCell>
+      <Table.TextCell>{admin.adminBlocked ? 'Sim' : 'Não'}</Table.TextCell>
 
       <S.AccessListMenu>
         {/* <IconButton

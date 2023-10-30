@@ -9,11 +9,13 @@ import { IAuthenticatedUser, IUserData } from '@/@types/Auth'
 interface ICreateAuthenticatedUser {
   adminName: string
   adminEmail: string
+  adminIsSuper: boolean
 }
 
 const handleCreateAuthenticatedUser = async ({
   adminName,
-  adminEmail
+  adminEmail,
+  adminIsSuper
 }: ICreateAuthenticatedUser) => {
   try {
     const authenticatedUsersRef = firebase.database().ref('authenticatedUsers')
@@ -22,6 +24,7 @@ const handleCreateAuthenticatedUser = async ({
       adminName: adminName,
       adminEmail: adminEmail,
       adminBlocked: false,
+      adminIsSuper: adminIsSuper,
       adminRegisteredAt: Date.now()
     }
 
@@ -44,7 +47,7 @@ const handleCreateAuthenticatedUser = async ({
 const handleGetAllAuthenticatedUsers = (
   callback: (usersData: IAuthenticatedUser[] | null) => void
 ) => {
-  const userAccountsRef = firebase.database().ref('authenticatedUsers')
+  const adminAccountsRef = firebase.database().ref('authenticatedUsers')
 
   const listener = (snapshot: any) => {
     try {
@@ -66,10 +69,10 @@ const handleGetAllAuthenticatedUsers = (
   }
 
   const offCallback = () => {
-    userAccountsRef.off('value', listener)
+    adminAccountsRef.off('value', listener)
   }
 
-  userAccountsRef.on('value', listener)
+  adminAccountsRef.on('value', listener)
 
   return offCallback
 }
@@ -79,7 +82,7 @@ const handleGetAllAuthenticatedUsers = (
 const handleGetAllUsers = (
   callback: (usersData: IUserData[] | null) => void
 ) => {
-  const userAccountsRef = firebase.database().ref('userAccounts')
+  const adminAccountsRef = firebase.database().ref('adminAccounts')
 
   const listener = (snapshot: any) => {
     try {
@@ -101,10 +104,10 @@ const handleGetAllUsers = (
   }
 
   const offCallback = () => {
-    userAccountsRef.off('value', listener)
+    adminAccountsRef.off('value', listener)
   }
 
-  userAccountsRef.on('value', listener)
+  adminAccountsRef.on('value', listener)
 
   return offCallback
 }
