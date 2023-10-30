@@ -18,7 +18,7 @@ import firebase from '@/firebase/firebase'
 // } from '@/firebase/auth'
 
 import { IUserData } from '@/@types/Auth'
-import { handleLogoutAdmin } from '@/firebase/auth'
+import { handleGetAdminData, handleLogoutAdmin } from '@/firebase/auth'
 
 interface AdminAuthContextData {
   userId: string | null
@@ -72,6 +72,18 @@ const AdminAuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return () => unsubscribe()
   }, [handleLogout])
+
+  useEffect(() => {
+    const unsubscribe = handleGetAdminData((accountData) => {
+      setUserData(accountData)
+    })
+
+    if (unsubscribe) {
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [userId])
 
   // =================================================================
 

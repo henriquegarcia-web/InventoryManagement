@@ -3,21 +3,25 @@ import { useState } from 'react'
 
 import * as S from './styles'
 
-import { Button, Input, Switch, theme } from 'antd'
+import { Button, Input, Checkbox, theme } from 'antd'
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { Controller, useForm } from 'react-hook-form'
 
-import { handleSigninAdmin } from '@/firebase/auth'
+import { handleSigninUser, handleSignupUser } from '@/firebase/auth'
 
 interface ISigninForm {
   adminEmail: string
   adminPassword: string
+  adminPasswordConfirm: string
 }
 
 const AdminSignin = () => {
   const { token } = theme.useToken()
 
   const navigate = useNavigate()
+
+  const [isFirstAccess, setIsFirstAccess] = useState(false)
   const [signinIsLoading, setSigninIsLoading] = useState(false)
 
   const { control, handleSubmit, reset, formState } = useForm<ISigninForm>()
@@ -27,7 +31,7 @@ const AdminSignin = () => {
   const handleSignin = async (data: ISigninForm) => {
     setSigninIsLoading(true)
 
-    const signinAdminResponse = await handleSigninAdmin({
+    const signinAdminResponse = await handleSigninUser({
       adminEmail: data.adminEmail,
       adminPassword: data.adminPassword
     })
@@ -38,6 +42,26 @@ const AdminSignin = () => {
       reset()
       navigate('/admin')
     }
+  }
+
+  const handleSignup = async (data: ISigninForm) => {
+    setSigninIsLoading(true)
+
+    const signupAdminResponse = await handleSignupUser({
+      adminEmail: data.adminEmail,
+      adminPassword: data.adminPassword
+    })
+
+    setSigninIsLoading(false)
+
+    if (signupAdminResponse) {
+      reset()
+      navigate('/admin')
+    }
+  }
+
+  const onChange = (e: CheckboxChangeEvent) => {
+    setIsFirstAccess(e.target.checked)
   }
 
   return (
@@ -56,7 +80,11 @@ const AdminSignin = () => {
         <S.AuthContainerContent>
           <S.AdminSigninForm
             layout="vertical"
-            onFinish={handleSubmit(handleSignin)}
+            onFinish={
+              isFirstAccess
+                ? handleSubmit(handleSignup)
+                : handleSubmit(handleSignin)
+            }
           >
             <Controller
               name="adminEmail"
@@ -72,10 +100,20 @@ const AdminSignin = () => {
                 <Input.Password {...field} placeholder="Senha" />
               )}
             />
-            <S.AdminSigninFormNavigator>
+            {isFirstAccess && (
+              <Controller
+                name="adminPasswordConfirm"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <Input.Password {...field} placeholder="Confirmar senha" />
+                )}
+              />
+            )}
+            <S.SignInFormChanger style={{ color: token.colorTextSecondary }}>
               Primeiro acesso?
-              <b onClick={() => navigate('/admin/cadastrar')}>Criar conta</b>
-            </S.AdminSigninFormNavigator>
+              <Checkbox onChange={onChange}></Checkbox>
+            </S.SignInFormChanger>
             <S.AdminSigninFormFooter>
               <Button
                 type="primary"

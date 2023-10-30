@@ -12,9 +12,16 @@ export type ThemeProps = 'default' | 'dark'
 
 import { handleGetAllProducts } from '@/firebase/inventory'
 import { IProduct } from '@/@types/Admin'
+import {
+  handleGetAllAuthenticatedUsers,
+  handleGetAllUsers
+} from '@/firebase/admin'
+import { IAuthenticatedUser, IUserData } from '@/@types/Auth'
 
 interface AdminContextData {
   inventoryList: IProduct[] | null
+  authenticatedUsersList: IAuthenticatedUser[] | null
+  usersList: IUserData[] | null
 }
 
 // ===================================================================
@@ -28,6 +35,11 @@ const AdminProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [inventoryList, setInvetoryList] = useState<IProduct[] | null>(null)
 
+  const [usersList, setUsersList] = useState<IUserData[] | null>(null)
+  const [authenticatedUsersList, setAuthenticatedUsersList] = useState<
+    IAuthenticatedUser[] | null
+  >(null)
+
   useEffect(() => {
     const unsubscribe = handleGetAllProducts((productsList) => {
       setInvetoryList(productsList)
@@ -39,13 +51,39 @@ const AdminProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
+  useEffect(() => {
+    const unsubscribe = handleGetAllAuthenticatedUsers((authenticatedUsers) => {
+      setAuthenticatedUsersList(authenticatedUsers)
+    })
+
+    if (unsubscribe) {
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const unsubscribe = handleGetAllUsers((users) => {
+      setUsersList(users)
+    })
+
+    if (unsubscribe) {
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [])
+
   // =================================================================
 
   const AdminContextValues = useMemo(() => {
     return {
-      inventoryList
+      inventoryList,
+      authenticatedUsersList,
+      usersList
     }
-  }, [inventoryList])
+  }, [inventoryList, authenticatedUsersList, usersList])
 
   return (
     <AdminContext.Provider value={AdminContextValues}>

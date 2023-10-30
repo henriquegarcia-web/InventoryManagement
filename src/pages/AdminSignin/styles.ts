@@ -85,21 +85,14 @@ export const AdminSigninForm = styled(Form)`
   }
 `
 
-export const AdminSigninFormNavigator = styled.p`
+export const SignInFormChanger = styled.div`
   display: flex;
   justify-content: flex-end;
-  column-gap: 3px;
-  width: 100%;
-  margin-top: 4px;
+  align-items: center;
+  column-gap: 6px;
+  margin-top: 5px;
 
   font-size: 12px;
-  line-height: 12px;
-  font-weight: 300;
-
-  b {
-    cursor: pointer;
-    font-weight: 500;
-  }
 `
 
 export const AdminSigninFormFooter = styled.div`

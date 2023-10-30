@@ -1,6 +1,10 @@
 import { IoStorefrontOutline, IoExitOutline } from 'react-icons/io5'
 
-import { AdminProductsView, AdminAccessView } from '@/pages/Admin/Views'
+import {
+  AdminProductsView,
+  AdminAccessView,
+  AdminClientsView
+} from '@/pages/Admin/Views'
 
 export interface IMenu {
   menuId: string
@@ -24,30 +28,31 @@ const menusData: IMenu[] = [
     menuIcon: <IoStorefrontOutline />,
     menuRender: <AdminAccessView />,
     menuDanger: false
+  },
+  {
+    menuId: 'usuarios',
+    menuLabel: 'Usuários',
+    menuIcon: <IoStorefrontOutline />,
+    menuRender: <AdminClientsView />,
+    menuDanger: false
   }
-  // {
-  //   menuId: 'divulgacao',
-  //   menuLabel: 'Divulgação',
-  //   menuIcon: <IoStorefrontOutline />,
-  //   menuRender: <DisclosureAdminView />,
-  // },
 ]
 
 const privateMenusData: IMenu[] = [
-  {
-    menuId: 'products',
-    menuLabel: 'Estoque',
-    menuIcon: <IoStorefrontOutline />,
-    menuRender: <AdminProductsView />,
-    menuDanger: false
-  },
-  {
-    menuId: 'acessos',
-    menuLabel: 'Acessos',
-    menuIcon: <IoStorefrontOutline />,
-    menuRender: <AdminAccessView />,
-    menuDanger: false
-  },
+  // {
+  //   menuId: 'products',
+  //   menuLabel: 'Estoque',
+  //   menuIcon: <IoStorefrontOutline />,
+  //   menuRender: <AdminProductsView />,
+  //   menuDanger: false
+  // },
+  // {
+  //   menuId: 'acessos',
+  //   menuLabel: 'Acessos',
+  //   menuIcon: <IoStorefrontOutline />,
+  //   menuRender: <AdminAccessView />,
+  //   menuDanger: false
+  // },
   {
     menuId: 'sair',
     menuLabel: 'Sair',

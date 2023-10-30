@@ -10,9 +10,7 @@ export interface ISigninUser {
 }
 
 export interface ISignupUser {
-  adminName: string
   adminEmail: string
-  adminPhone: string
   adminPassword: string
 }
 
@@ -20,8 +18,15 @@ export interface IUserData {
   adminId: string
   adminName: string
   adminEmail: string
-  adminPhone: string
   adminRegisteredAt: number
+  adminBlocked: boolean
+}
+
+export interface IAuthenticatedUser {
+  adminName: string
+  adminEmail: string
+  adminRegisteredAt?: number
+  adminBlocked: boolean
 }
 
 // export interface ISigninAdmin extends ISigninUser {}
