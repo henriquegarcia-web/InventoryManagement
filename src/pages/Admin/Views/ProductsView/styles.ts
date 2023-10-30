@@ -28,25 +28,7 @@ export const ProductsViewContent = styled.div`
   display: flex;
   border-radius: 8px;
   height: calc(100% - 40px);
-
-  border: 1px solid rgba(0, 0, 0, 0.1);
 `
-
-// export const ProductsView = styled.div`
-//   display: flex;
-// `
-
-// export const ProductsView = styled.div`
-//   display: flex;
-// `
-
-// export const ProductsView = styled.div`
-//   display: flex;
-// `
-
-// export const ProductsView = styled.div`
-//   display: flex;
-// `
 
 export const WithdrawForm = styled(Form)`
   display: flex;
@@ -116,8 +98,60 @@ export const ProductsListMenu = styled.div`
   padding-right: 8px;
 
   button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     svg {
-      margin: 1px 0 0 0 !important;
+      font-size: 16px !important;
+      margin: 0 !important;
     }
+  }
+`
+
+// ============================================== PRODUCT VIEW MODAL
+
+export const ViewProductContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 50vh;
+  overflow: auto;
+  padding-right: 10px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    z-index: 1000;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ff7a00;
+  }
+`
+
+export const ViewProductWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  width: 100%;
+  height: fit-content;
+`
+
+export const ViewProduct = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  b {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 300;
   }
 `

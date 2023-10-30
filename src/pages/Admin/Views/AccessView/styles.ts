@@ -28,9 +28,8 @@ export const AccessViewContent = styled.div`
   display: flex;
   border-radius: 8px;
   height: calc(100% - 40px);
-
-  border: 1px solid rgba(0, 0, 0, 0.1);
 `
+
 export const CreateClientForm = styled(Form)`
   display: flex;
   flex-direction: column;

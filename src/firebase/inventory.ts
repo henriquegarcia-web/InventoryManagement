@@ -37,6 +37,39 @@ const handleCreateProduct = async (productData: ICreateProduct) => {
   }
 }
 
+const handleEditProduct = async (
+  productId: string,
+  productData: ICreateProduct
+) => {
+  try {
+    const inventoryRef = firebase.database().ref('inventory')
+    const productRef = inventoryRef.child(productId)
+
+    if (!productId) {
+      message.open({
+        type: 'error',
+        content: 'ID do produto inválido'
+      })
+      return false
+    }
+
+    await productRef.update(productData)
+
+    message.open({
+      type: 'success',
+      content: 'Produto editado com sucesso'
+    })
+
+    return true
+  } catch (error) {
+    message.open({
+      type: 'error',
+      content: 'Erro ao editar o produto'
+    })
+    return false
+  }
+}
+
 const handleGetAllProducts = (
   callback: (products: IProduct[] | null) => void
 ) => {
@@ -70,4 +103,4 @@ const handleGetAllProducts = (
   return offCallback
 }
 
-export { handleCreateProduct, handleGetAllProducts }
+export { handleCreateProduct, handleEditProduct, handleGetAllProducts }

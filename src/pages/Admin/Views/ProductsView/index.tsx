@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import * as S from './styles'
-import { IoSearchSharp } from 'react-icons/io5'
+import { IoCreateOutline, IoEyeOutline, IoSearchSharp } from 'react-icons/io5'
 
 import { Button, Form, Input, Modal, theme } from 'antd'
 import { IconButton, Table } from 'evergreen-ui'
@@ -10,11 +10,12 @@ import { Controller, useForm } from 'react-hook-form'
 
 import { useAdminAuth } from '@/contexts/AdminAuthContext'
 import { useAdmin } from '@/contexts/AdminContext'
-import { handleCreateProduct } from '@/firebase/inventory'
+import { handleCreateProduct, handleEditProduct } from '@/firebase/inventory'
 
 import {
   formatByCurrency,
   formatCurrency,
+  formatCurrencyToEdit,
   formatToCurrency
 } from '@/utils/functions/formatCurrency'
 
@@ -33,8 +34,6 @@ const ProductsView = () => {
     setIsWithdrawHistoricModalOpen(false)
 
   const filteredInventory = useMemo(() => {
-    console.log(inventoryList)
-
     if (!inventoryList) return []
 
     if (!usersSearch) return inventoryList
@@ -351,31 +350,388 @@ interface IProductsListItem {
 }
 
 const ProductsListItem = ({ product }: IProductsListItem) => {
+  const { isAdminSuper } = useAdminAuth()
+
   const [isOnEditMode, setIsOnEditMode] = useState(false)
 
-  return (
-    <Table.Row height={50}>
-      <Table.TextCell>{product.productName}</Table.TextCell>
-      <Table.TextCell>{product.productCode}</Table.TextCell>
-      <Table.TextCell>{product.productCodeConversion}</Table.TextCell>
-      {/* <Table.TextCell>{product.productDescription}</Table.TextCell> */}
-      <Table.TextCell>
-        {formatCurrency(parseFloat(product.productCostValue))}
-      </Table.TextCell>
-      <Table.TextCell>
-        {formatCurrency(parseFloat(product.productSaleValue))}
-      </Table.TextCell>
-      <Table.TextCell>{product.productQuantity}</Table.TextCell>
-      <Table.TextCell>{product.productLocation}</Table.TextCell>
+  const [activeProduct, setActiveProduct] = useState<IProduct | null>(null)
 
-      <S.ProductsListMenu>
-        {/* <IconButton
-          icon={HiOutlineEye}
-          iconSize={16}
-          size="medium"
-          onClick={() => openViewModal(request)}
-        /> */}
-      </S.ProductsListMenu>
-    </Table.Row>
+  const [viewProductModalIsOpen, setViewProductModalIsOpen] = useState(false)
+  const [editProductModalIsOpen, setEditProductModalIsOpen] = useState(false)
+
+  const handleShowViewProductModal = (product: IProduct) => {
+    setActiveProduct(product)
+    setViewProductModalIsOpen(true)
+  }
+  const handleCloseViewProductModal = () => {
+    setActiveProduct(null)
+    setViewProductModalIsOpen(false)
+  }
+
+  const handleShowEditProductModal = (product: IProduct) => {
+    setActiveProduct(product)
+    setEditProductModalIsOpen(true)
+  }
+  const handleCloseEditProductModal = () => {
+    setActiveProduct(null)
+    setEditProductModalIsOpen(false)
+  }
+
+  return (
+    <>
+      <Table.Row height={50}>
+        <Table.TextCell>{product.productName}</Table.TextCell>
+        <Table.TextCell>{product.productCode}</Table.TextCell>
+        <Table.TextCell>{product.productCodeConversion}</Table.TextCell>
+        {/* <Table.TextCell>{product.productDescription}</Table.TextCell> */}
+        <Table.TextCell>
+          {formatCurrency(parseFloat(product.productCostValue))}
+        </Table.TextCell>
+        <Table.TextCell>
+          {formatCurrency(parseFloat(product.productSaleValue))}
+        </Table.TextCell>
+        <Table.TextCell>{product.productQuantity}</Table.TextCell>
+        <Table.TextCell>{product.productLocation}</Table.TextCell>
+
+        <S.ProductsListMenu>
+          <Button
+            onClick={() => handleShowViewProductModal(product)}
+            icon={<IoEyeOutline style={{ fontSize: 20, marginLeft: '5px' }} />}
+          />
+          {isAdminSuper && (
+            <Button
+              onClick={() => handleShowEditProductModal(product)}
+              icon={
+                <IoCreateOutline style={{ fontSize: 20, marginLeft: '5px' }} />
+              }
+            />
+          )}
+        </S.ProductsListMenu>
+      </Table.Row>
+
+      {isAdminSuper && (
+        <ProductEditionModal
+          isModalOpen={editProductModalIsOpen}
+          handleModalClose={handleCloseEditProductModal}
+          product={product}
+        />
+      )}
+
+      <ProductViewModal
+        isModalOpen={viewProductModalIsOpen}
+        handleModalClose={handleCloseViewProductModal}
+        product={product}
+      />
+    </>
+  )
+}
+
+// =========================================== EDIT PRODUCT
+
+interface IProductEditionModal {
+  isModalOpen: boolean
+  handleModalClose: () => void
+  product: IProduct
+}
+const ProductEditionModal = ({
+  isModalOpen,
+  handleModalClose,
+  product
+}: IProductEditionModal) => {
+  const [isCreateProductLoading, setIsCreateProductLoading] = useState(false)
+
+  const { control, handleSubmit, reset, formState, setValue } =
+    useForm<ICreateProduct>()
+
+  const { isValid } = formState
+
+  useEffect(() => {
+    setValue('productName', product.productName)
+    setValue('productCode', product.productCode)
+    setValue('productCodeConversion', product.productCodeConversion)
+    setValue('productDescription', product.productDescription)
+    setValue(
+      'productCostValue',
+      formatCurrencyToEdit(parseFloat(product.productCostValue))
+    )
+    setValue(
+      'productSaleValue',
+      formatCurrencyToEdit(parseFloat(product.productSaleValue))
+    )
+    setValue('productQuantity', product.productQuantity)
+    setValue('productLocation', product.productLocation)
+  }, [product])
+
+  const handleCreateWithdraw = async (data: ICreateProduct) => {
+    setIsCreateProductLoading(true)
+
+    const productData: ICreateProduct = {
+      productName: data.productName,
+      productCode: data.productCode,
+      productCodeConversion: data.productCodeConversion,
+      productDescription: data.productDescription,
+      productCostValue: formatByCurrency(data.productCostValue),
+      productSaleValue: formatByCurrency(data.productSaleValue),
+      productQuantity: parseInt(data.productQuantity),
+      productLocation: data.productLocation
+    }
+
+    const createProductResponse = await handleEditProduct(
+      product.productId,
+      productData
+    )
+
+    setIsCreateProductLoading(false)
+
+    if (createProductResponse) {
+      reset()
+      handleModalClose()
+    }
+  }
+
+  return (
+    <Modal
+      title="Criar novo produto"
+      open={isModalOpen}
+      onOk={handleModalClose}
+      onCancel={handleModalClose}
+      footer={null}
+      destroyOnClose
+      afterClose={() => {
+        reset()
+        handleModalClose()
+      }}
+    >
+      <S.WithdrawForm
+        layout="vertical"
+        onFinish={handleSubmit(handleCreateWithdraw)}
+      >
+        <S.WithdrawFormContainer>
+          <S.WithdrawFormWrapper>
+            <Form.Item label="Nome do produto">
+              <Controller
+                name="productName"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Digite o nome do produto"
+                    />
+                  </>
+                )}
+              />
+            </Form.Item>
+            <Form.Item label="Código original">
+              <Controller
+                name="productCode"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Digite o código original do produto"
+                    />
+                  </>
+                )}
+              />
+            </Form.Item>
+            <Form.Item label="Código de conversão">
+              <Controller
+                name="productCodeConversion"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Digite o código de conversão do produto"
+                    />
+                  </>
+                )}
+              />
+            </Form.Item>
+            <Form.Item label="Descrição do produto">
+              <Controller
+                name="productDescription"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <Input.TextArea
+                    {...field}
+                    placeholder="Descrição da empresa"
+                    rows={4}
+                    style={{ resize: 'none' }}
+                  />
+                )}
+              />
+            </Form.Item>
+            <S.InputsWrapper>
+              <Form.Item label="Valor de custo">
+                <Controller
+                  name="productCostValue"
+                  control={control}
+                  rules={{ required: 'Este campo é obrigatório' }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="0,00"
+                      addonBefore="R$"
+                      onChange={(e) => {
+                        const { value } = e.target
+                        const formattedValue = formatToCurrency(value)
+                        field.onChange(formattedValue)
+                      }}
+                      style={{ borderRadius: '6px' }}
+                    />
+                  )}
+                />
+              </Form.Item>
+              <Form.Item label="Valor de venda">
+                <Controller
+                  name="productSaleValue"
+                  control={control}
+                  rules={{ required: 'Este campo é obrigatório' }}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      placeholder="0,00"
+                      addonBefore="R$"
+                      onChange={(e) => {
+                        const { value } = e.target
+                        const formattedValue = formatToCurrency(value)
+                        field.onChange(formattedValue)
+                      }}
+                      style={{ borderRadius: '6px' }}
+                    />
+                  )}
+                />
+              </Form.Item>
+            </S.InputsWrapper>
+            <Form.Item label="Quantidade">
+              <Controller
+                name="productQuantity"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <>
+                    <Input
+                      {...field}
+                      type="number"
+                      min={0}
+                      placeholder="Digite a quatidade"
+                    />
+                  </>
+                )}
+              />
+            </Form.Item>
+            <Form.Item label="Localização">
+              <Controller
+                name="productLocation"
+                control={control}
+                rules={{ required: 'Este campo é obrigatório' }}
+                render={({ field }) => (
+                  <>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Digite a localização do produto"
+                    />
+                  </>
+                )}
+              />
+            </Form.Item>
+          </S.WithdrawFormWrapper>
+        </S.WithdrawFormContainer>
+        <S.WithdrawFormFooter>
+          <Button danger loading={isCreateProductLoading}>
+            Cancelar
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={isCreateProductLoading}
+            disabled={!isValid || isCreateProductLoading}
+          >
+            Editar
+          </Button>
+        </S.WithdrawFormFooter>
+      </S.WithdrawForm>
+    </Modal>
+  )
+}
+
+// =========================================== EDIT PRODUCT
+
+interface IProductViewModal {
+  isModalOpen: boolean
+  handleModalClose: () => void
+  product: IProduct
+}
+const ProductViewModal = ({
+  isModalOpen,
+  handleModalClose,
+  product
+}: IProductViewModal) => {
+  return (
+    <Modal
+      title={product.productName || 'Visualizando produto'}
+      open={isModalOpen}
+      onOk={handleModalClose}
+      onCancel={handleModalClose}
+      okText="Ok"
+      cancelText="Cancelar"
+      cancelButtonProps={{
+        style: {
+          display: 'none'
+        }
+      }}
+      destroyOnClose
+      afterClose={() => {
+        handleModalClose()
+      }}
+    >
+      <S.ViewProductContainer>
+        <S.ViewProductWrapper>
+          <S.ViewProduct>
+            <b>Nome do Produto</b>
+            <p>{product.productName}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Código Original</b>
+            <p>{product.productCode}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Código de Conversão</b>
+            <p>{product.productCodeConversion}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Descição</b>
+            <p>{product.productDescription}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Valor de Custo</b>
+            <p>{formatCurrency(parseFloat(product.productCostValue))}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Valor de Venda</b>
+            <p>{formatCurrency(parseFloat(product.productSaleValue))}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Quantidade</b>
+            <p>{product.productQuantity}</p>
+          </S.ViewProduct>
+          <S.ViewProduct>
+            <b>Localização</b>
+            <p>{product.productLocation}</p>
+          </S.ViewProduct>
+        </S.ViewProductWrapper>
+      </S.ViewProductContainer>
+    </Modal>
   )
 }

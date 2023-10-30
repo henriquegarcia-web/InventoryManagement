@@ -3,7 +3,12 @@ import { useMemo, useState } from 'react'
 
 import * as S from './styles'
 
-import { menusDataAdmin, menusDataPublic, IMenu } from '@/data/menus'
+import {
+  menusDataAdmin,
+  menusDataPublic,
+  IMenu,
+  privateMenusData
+} from '@/data/menus'
 
 import { Avatar, Dropdown, type MenuProps, theme, Spin } from 'antd'
 
@@ -86,7 +91,7 @@ const UserMenu = ({ setMenuId, menus }: IUserMenu) => {
   const { handleLogout, userData } = useAdminAuth()
 
   const formattedPrivateMenus: MenuProps['items'] = useMemo(() => {
-    const transformedMenus = menus.map((menu: any) => {
+    const transformedMenus = privateMenusData.map((menu: any) => {
       return {
         label: menu.menuLabel,
         key: menu.menuId,
@@ -95,7 +100,7 @@ const UserMenu = ({ setMenuId, menus }: IUserMenu) => {
     })
 
     return transformedMenus
-  }, [menus])
+  }, [])
 
   return (
     <Dropdown
