@@ -42,32 +42,36 @@ const ProductsView = () => {
   const filteredInventory = useMemo(() => {
     if (!inventoryList) return []
 
-    const sorted = [...inventoryList]
+    const sorted: any = [...inventoryList]
 
     switch (usersSearchFilter) {
       case 'ordemCrescente':
-        sorted.sort((a, b) => a.productName.localeCompare(b.productName))
+        sorted.sort((a: any, b: any) =>
+          a.productName.localeCompare(b.productName)
+        )
         break
       case 'ordemDecrescente':
-        sorted.sort((a, b) => b.productName.localeCompare(a.productName))
+        sorted.sort((a: any, b: any) =>
+          b.productName.localeCompare(a.productName)
+        )
         break
       case 'menorValorCusto':
-        sorted.sort((a, b) => a.productCostValue - b.productCostValue)
+        sorted.sort((a: any, b: any) => a.productCostValue - b.productCostValue)
         break
       case 'maiorValorCusto':
-        sorted.sort((a, b) => b.productCostValue - a.productCostValue)
+        sorted.sort((a: any, b: any) => b.productCostValue - a.productCostValue)
         break
       case 'menorValorVenda':
-        sorted.sort((a, b) => a.productSaleValue - b.productSaleValue)
+        sorted.sort((a: any, b: any) => a.productSaleValue - b.productSaleValue)
         break
       case 'maiorValorVenda':
-        sorted.sort((a, b) => b.productSaleValue - a.productSaleValue)
+        sorted.sort((a: any, b: any) => b.productSaleValue - a.productSaleValue)
         break
       case 'quantidadeCrescente':
-        sorted.sort((a, b) => a.productQuantity - b.productQuantity)
+        sorted.sort((a: any, b: any) => a.productQuantity - b.productQuantity)
         break
       case 'quantidadeDecrescente':
-        sorted.sort((a, b) => b.productQuantity - a.productQuantity)
+        sorted.sort((a: any, b: any) => b.productQuantity - a.productQuantity)
         break
       default:
         break
