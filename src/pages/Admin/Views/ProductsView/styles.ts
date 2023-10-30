@@ -18,6 +18,7 @@ export const ProductsViewHeader = styled.div`
 
 export const ProductsViewHeaderFilters = styled.div`
   display: flex;
+  column-gap: 10px;
 `
 
 export const ProductsViewHeaderMenu = styled.div`

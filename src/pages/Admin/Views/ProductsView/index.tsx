@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import * as S from './styles'
-import { IoCreateOutline, IoEyeOutline, IoSearchSharp } from 'react-icons/io5'
+import {
+  IoChevronDownOutline,
+  IoCreateOutline,
+  IoEyeOutline,
+  IoSearchSharp
+} from 'react-icons/io5'
 
-import { Button, Form, Input, Modal, theme } from 'antd'
-import { IconButton, Table } from 'evergreen-ui'
+import { Button, Dropdown, Form, Input, Modal, theme } from 'antd'
+import { Table } from 'evergreen-ui'
 
 import { Controller, useForm } from 'react-hook-form'
 
@@ -25,6 +30,7 @@ const ProductsView = () => {
   const { inventoryList } = useAdmin()
 
   const [usersSearch, setUsersSearch] = useState('')
+  const [usersSearchFilter, setUsersSearchFilter] = useState('')
 
   const [isWithdrawHistoricModalOpen, setIsWithdrawHistoricModalOpen] =
     useState(false)
@@ -36,15 +42,62 @@ const ProductsView = () => {
   const filteredInventory = useMemo(() => {
     if (!inventoryList) return []
 
-    if (!usersSearch) return inventoryList
+    const sorted = [...inventoryList]
 
-    return inventoryList.filter((product: IProduct) => {
+    switch (usersSearchFilter) {
+      case 'ordemCrescente':
+        sorted.sort((a, b) => a.productName.localeCompare(b.productName))
+        break
+      case 'ordemDecrescente':
+        sorted.sort((a, b) => b.productName.localeCompare(a.productName))
+        break
+      case 'menorValorCusto':
+        sorted.sort((a, b) => a.productCostValue - b.productCostValue)
+        break
+      case 'maiorValorCusto':
+        sorted.sort((a, b) => b.productCostValue - a.productCostValue)
+        break
+      case 'menorValorVenda':
+        sorted.sort((a, b) => a.productSaleValue - b.productSaleValue)
+        break
+      case 'maiorValorVenda':
+        sorted.sort((a, b) => b.productSaleValue - a.productSaleValue)
+        break
+      case 'quantidadeCrescente':
+        sorted.sort((a, b) => a.productQuantity - b.productQuantity)
+        break
+      case 'quantidadeDecrescente':
+        sorted.sort((a, b) => b.productQuantity - a.productQuantity)
+        break
+      default:
+        break
+    }
+
+    console.log(usersSearchFilter)
+
+    if (!usersSearch) return sorted
+
+    return sorted.filter((product: IProduct) => {
       const objectAsString = JSON.stringify(product).toLowerCase()
       return objectAsString.includes(usersSearch.toLowerCase())
     })
-  }, [inventoryList, usersSearch])
+  }, [inventoryList, usersSearch, usersSearchFilter])
 
   const handleSearch = (value: string) => setUsersSearch(value)
+
+  const formattedAgreements: any[] = useMemo(() => {
+    return (
+      orderOptions.map((item) => ({
+        key: item.orderId,
+        label: item.orderLabel
+      })) || []
+    )
+  }, [])
+
+  const getAgreementLabel = (key: string): string | null => {
+    const item: any = formattedAgreements.find((item) => item.key === key)
+    return item ? item.label : null
+  }
 
   return (
     <>
@@ -60,6 +113,24 @@ const ProductsView = () => {
               onChange={(e) => handleSearch(e.target.value)}
               value={usersSearch}
             />
+            <Dropdown.Button
+              onClick={() => setUsersSearchFilter('')}
+              menu={{
+                items: formattedAgreements,
+                onClick: (e) => setUsersSearchFilter(e.key),
+                style: { width: '100%' }
+              }}
+              icon={
+                <IoChevronDownOutline
+                  style={{ fontSize: 16, marginBottom: '-4px' }}
+                />
+              }
+              trigger={['click']}
+            >
+              {usersSearchFilter
+                ? getAgreementLabel(usersSearchFilter.toString())
+                : 'Selecione um filtro'}
+            </Dropdown.Button>
           </S.ProductsViewHeaderFilters>
           <S.ProductsViewHeaderMenu>
             <Button type="default" onClick={showWithdrawHistoricModal}>
@@ -735,3 +806,38 @@ const ProductViewModal = ({
     </Modal>
   )
 }
+
+const orderOptions = [
+  {
+    orderId: 'ordemCrescente',
+    orderLabel: 'Nome Crescente'
+  },
+  {
+    orderId: 'ordemDecrescente',
+    orderLabel: 'Nome Decrescente'
+  },
+  {
+    orderId: 'menorValorCusto',
+    orderLabel: 'Menor Valor de Custo'
+  },
+  {
+    orderId: 'maiorValorCusto',
+    orderLabel: 'Maior Valor de Custo'
+  },
+  {
+    orderId: 'menorValorVenda',
+    orderLabel: 'Menor Valor de Venda'
+  },
+  {
+    orderId: 'maiorValorVenda',
+    orderLabel: 'Maior Valor de Venda'
+  },
+  {
+    orderId: 'quantidadeCrescente',
+    orderLabel: 'Quantidade Crescente'
+  },
+  {
+    orderId: 'quantidadeDecrescente',
+    orderLabel: 'Quantidade Decrescente'
+  }
+]
